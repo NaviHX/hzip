@@ -28,7 +28,7 @@ int flushW(fileW *fout)
     for (int i = 0; i < BUFFER_SIZE; i++)
     {
         temp <<= 1;
-        temp += (fout->buffer[i] - '0');
+        temp += (fout->buffer[BUFFER_SIZE - i - 1] - '0');
     }
     fout->out &&fwrite(&temp, 1, 1, fout->out);
     fout->used = 0;
@@ -71,7 +71,7 @@ void compress(char *inputFileName, char *outputFileName)
     getEncoding(enc, hTree, v);
     fprintf(fout->out, "HZip\0");
     for (int i = 0; i < 256; i++)
-        fprintf(fout->out, "lld", freq[i]);
+        fwrite(&freq[i], sizeof(long long), 1, fout->out);
     fprintf(fout->out, "\0");
     while (!feof(fin->in))
     {
@@ -82,4 +82,51 @@ void compress(char *inputFileName, char *outputFileName)
     BYTE remainer = flushW(fout);
     fseek(fout->out, 4, SEEK_SET);
     fprintf(fout->out, "%c", remainer);
+}
+
+void extract(char *inputFileName, char *outputFileName)
+{
+    fileR *fin = getInputFile(inputFileName);
+    fileW *fout = getOutputFile(outputFileName);
+    char verify[5];
+    queue<char> q;
+    long long freq[256];
+    verify[4] = '\0';
+    fscanf(fin->in, "%c%c%c%c", verify, verify + 1, verify + 2, verify + 3);
+    if (strcmp(verify, "Hzip"))
+    {
+        cout << "Error File!\nNot a Hzip file\n";
+        return;
+    }
+    fscanf(fin->in, "%c", fin->remainer);
+    fread(freq, sizeof(long long), 256, fin->in);
+    node *root = getHuffmanTree(freq);
+    while (!feof(fin->in))
+    {
+        BYTE temp, maxSize = 8;
+        fscanf(fin->in, "%c", &temp);
+        maxSize = (feof(fin->in)) ? fin->remainer : maxSize;
+        for (int i = 0; i < maxSize; i++)
+        {
+            q.push('0' + (temp & 1));
+            temp >>= 1;
+        }
+    }
+    node *cur = root;
+    while (!q.empty())
+    {
+        char temp = q.front();
+        cur = temp == '0' ? cur->left : cur->right;
+        if (cur == NULL)
+        {
+            cout << "This Hzip File is Corrupt !!!\n";
+            return;
+        }
+        if (cur->left == NULL && cur->right == NULL)
+        {
+            fprintf(fout->out, "%c", cur->val);
+            cur = root;
+        }
+        q.pop();
+    }
 }
