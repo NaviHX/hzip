@@ -41,4 +41,32 @@ void deleteHuffmanTree(node *t)
     free(t);
 }
 
-
+void getEncoding(string *encoding, node *root, vector<char> &state)
+{
+    if (root != NULL)
+    {
+        if (root->left == NULL && root->right == NULL)
+        {
+            string temp = "";
+            for (int i = 0; i < state.size(); i++)
+                temp += state[i];
+            encoding[root->val] = temp;
+        }
+        else
+        {
+            if (root->left != NULL)
+            {
+                state.push_back('0');
+                getEncoding(encoding, root->left, state);
+                state.pop_back();
+            }
+            if (root->right != NULL)
+            {
+                state.push_back('1');
+                getEncoding(encoding, root->right, state);
+                state.pop_back();
+            }
+        }
+    }
+    return;
+}
