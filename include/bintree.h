@@ -26,7 +26,7 @@ struct comp
 };
 
 node *getNode(BYTE c, long long freq);
-node *getHuffmanTree(int freq[]);
+node *getHuffmanTree(long long freq[]);
 void deleteHuffmanTree(node *t);
 void getEncoding(string* encoding,node* root,vector<char>& state);
 

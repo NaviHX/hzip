@@ -30,7 +30,7 @@ fileR* getInputFile(char* fileName);
 int flushW(fileW* fout);
 int fileWrite(fileW* fout,string bitString);
 
-void compress(string inputFileName,string outputFileName);
-void extract(string inputFileName,string outputFileName);
+void compress(char* inputFileName,char* outputFileName);
+void extract(char* inputFileName,char* outputFileName);
 
 #endif

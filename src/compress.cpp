@@ -52,3 +52,34 @@ int fileWrite(fileW *fout, string bitString)
     }
     return (pre + bitString.size()) % BUFFER_SIZE;
 }
+
+void compress(char *inputFileName, char *outputFileName)
+{
+    fileR *fin = getInputFile(inputFileName);
+    fileW *fout = getOutputFile(outputFileName);
+    long long freq[256];
+    while(!feof(fin->in))
+    {
+        BYTE temp;
+        fscanf(fin->in,"%c",&temp);
+        freq[temp]++;
+    }
+    fseek(fin->in,0,SEEK_SET);
+    node* hTree=getHuffmanTree(freq);
+    string encoding[256];
+    vector<char> v;
+    getEncoding(encoding,hTree,v);
+    fprintf(fout->out,"HZip\0");
+    for(int i=0;i<256;i++)
+        fprintf(fout->out,"lld",freq[i]);
+    fprintf(fout->out,"\0");
+    while(!feof(fin->in))
+    {
+        BYTE temp;
+        fscanf(fin->in,"%c",&temp);
+        fileWrite(fout,encoding[temp]);
+    }
+    BYTE remainer=flushW(fout);
+    fseek(fout->out,4,SEEK_SET);
+    fprintf(fout->out,"%c",remainer);
+}
