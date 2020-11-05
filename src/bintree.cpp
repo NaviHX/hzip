@@ -1,5 +1,4 @@
 #include "bintree.h"
-
 using namespace std;
 
 node *getNode(BYTE c, long long freq)
@@ -7,6 +6,8 @@ node *getNode(BYTE c, long long freq)
     node *temp = (node *)malloc(sizeof(node));
     temp->freq = freq;
     temp->val = c;
+    temp->left=NULL;
+    temp->right=NULL;
     return temp;
 }
 

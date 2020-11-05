@@ -28,6 +28,6 @@ struct comp
 node *getNode(BYTE c, long long freq);
 node *getHuffmanTree(long long freq[]);
 void deleteHuffmanTree(node *t);
-void getEncoding(string* encoding,node* root,vector<char>& state);
+void getEncoding(std::string* encoding,node* root,std::vector<char>& state);
 
 #endif
