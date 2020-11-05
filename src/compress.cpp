@@ -49,6 +49,7 @@ int fileWrite(fileW *fout, string bitString)
         char temp = q.front();
         fout->buffer[fout->used] = temp;
         fout->used++;
+        q.pop();
     }
     return (pre + bitString.size()) % BUFFER_SIZE;
 }
@@ -58,6 +59,8 @@ void compress(char *inputFileName, char *outputFileName)
     fileR *fin = getInputFile(inputFileName);
     fileW *fout = getOutputFile(outputFileName);
     long long freq[256];
+    for (int i = 0; i < 256; i++)
+        freq[i] = 0;
     while (!feof(fin->in))
     {
         BYTE temp;
@@ -70,8 +73,7 @@ void compress(char *inputFileName, char *outputFileName)
     vector<char> v;
     getEncoding(enc, hTree, v);
     fprintf(fout->out, "HZip\0");
-    for (int i = 0; i < 256; i++)
-        fwrite(&freq[i], sizeof(long long), 1, fout->out);
+    fwrite(freq, sizeof(long long), 256, fout->out);
     fprintf(fout->out, "\0");
     while (!feof(fin->in))
     {
@@ -93,7 +95,7 @@ void extract(char *inputFileName, char *outputFileName)
     long long freq[256];
     verify[4] = '\0';
     fscanf(fin->in, "%c%c%c%c", verify, verify + 1, verify + 2, verify + 3);
-    if (strcmp(verify, "Hzip"))
+    if (!(verify[0] == 'H' && verify[1] == 'Z' && verify[2] == 'i' && verify[3] == 'p'))
     {
         cout << "Error File!\nNot a Hzip file\n";
         return;
