@@ -30,4 +30,5 @@ Usage          : hzip [options] file_path
 -h, --help     : help information 
 -c, --compress : compress a file 
 -e, --extract  : extract a file 
+-o <file_path> : place the output file in <file_path>
 ```
