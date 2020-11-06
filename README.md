@@ -21,6 +21,8 @@ By NaviHX
 
 使用cmake
 
+或者[点击这里](https://github.com/NaviHX/hzip/releases/tag/1.0.1)下载windows下的二进制文件
+
 ## 用法
 
 ```
