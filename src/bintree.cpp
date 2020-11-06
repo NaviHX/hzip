@@ -1,6 +1,12 @@
 #include "bintree.h"
 using namespace std;
 
+/*
+获取节点
+c: 该节点的字符
+freq: 该节点的频率
+ret-> 结点指针 
+*/
 node *getNode(BYTE c, long long freq)
 {
     node *temp = (node *)malloc(sizeof(node));
@@ -11,6 +17,11 @@ node *getNode(BYTE c, long long freq)
     return temp;
 }
 
+/*
+获取哈夫曼树
+freq[]: 频率表
+ret-> 树的根指针
+*/
 node *getHuffmanTree(BYTE freq[])
 {
     priority_queue<node *, vector<node *>, comp> heap;
@@ -33,6 +44,10 @@ node *getHuffmanTree(BYTE freq[])
     return heap.top();
 }
 
+/*
+删除哈夫曼树
+t: 待删除的哈夫曼树
+*/
 void deleteHuffmanTree(node *t)
 {
     if (t == NULL)
@@ -42,6 +57,12 @@ void deleteHuffmanTree(node *t)
     free(t);
 }
 
+/*
+获取编码表
+encoding: 用于保存编码表的字符串组
+root: 当前的节点
+state: 从根节点到当前节点的路径产生的比特串
+*/
 void getEncoding(string *encoding, node *root, vector<char> &state)
 {
     if (root != NULL)

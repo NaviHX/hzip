@@ -28,9 +28,9 @@ struct comp
     }
 };
 
-node *getNode(BYTE c, long long freq);
-node *getHuffmanTree(BYTE freq[]);
-void deleteHuffmanTree(node *t);
-void getEncoding(std::string *encoding, node *root, std::vector<char> &state);
+node *getNode(BYTE c, long long freq);                                         //获取节点
+node *getHuffmanTree(BYTE freq[]);                                             //获取哈夫曼树
+void deleteHuffmanTree(node *t);                                               //释放哈夫曼树
+void getEncoding(std::string *encoding, node *root, std::vector<char> &state); //遍历哈夫曼树获取编码表,存储在encoding字符串组中
 
 #endif

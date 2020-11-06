@@ -12,9 +12,11 @@ int main(int argc, char **argv)
          << " \\ \\   __  \\   /  / /\\ \\  \\ \\   ____\\\n"
          << "  \\ \\  \\ \\  \\ /  /_/__\\ \\  \\ \\  \\___|\n"
          << "   \\ \\__\\ \\__\\\\________\\ \\__\\ \\__\\   \n"
-         << "    \\|__|\\|__|\\|_______|\\|__|\\|__|   \n";
+         << "    \\|__|\\|__|\\|_______|\\|__|\\|__|   \n"
+         << "By NaviHX\n"
+         << "Star me on Github : https://github.com/NaviHX/hzip\n";
     if (argc == 1)
-        cout << "Path Needed\nType -h for help\n";
+        cout << "Path Needed\nPath will be\"test.in\" if not given\nType -h for help\n";
     else
     {
         int flag = 0;

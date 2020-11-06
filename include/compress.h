@@ -11,32 +11,28 @@ using namespace std;
 
 #define BUFFER_SIZE 8
 
-struct fileW{
-    FILE* out;
-    string* encoding;
+struct fileW
+{
+    FILE *out;
+    string *encoding;
     char buffer[BUFFER_SIZE];
     int used;
 };
 
-struct fileR{
-    FILE* in;
-    string* encoding;
+struct fileR
+{
+    FILE *in;
+    string *encoding;
     BYTE remainer;
 };
 
-struct header{
-    char head[5]="Hzip";
-    BYTE remainer=0;
-    long long freq[256];
-};
+fileW *getOutputFile(char *fileName); //获取输出文件结构
+fileR *getInputFile(char *fileName);  //获取输入文件结构
 
-fileW* getOutputFile(char* fileName);
-fileR* getInputFile(char* fileName);
+int flushW(fileW *fout);                      //清除缓冲区
+int fileWrite(fileW *fout, string bitString); //写入压缩文件
 
-int flushW(fileW* fout);
-int fileWrite(fileW* fout,string bitString);
-
-void compress(char* inputFileName,char* outputFileName);
-void extract(char* inputFileName,char* outputFileName);
+void compress(char *inputFileName, char *outputFileName); //压缩流程
+void extract(char *inputFileName, char *outputFileName);  //解压流程
 
 #endif

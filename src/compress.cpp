@@ -1,7 +1,9 @@
 #include "compress.h"
 
-int count = 0;
-
+/*
+获取输入文件结构
+fileName: 输出文件名
+*/
 fileW *getOutputFile(char *fileName)
 {
     fileW *ret = (fileW *)malloc(sizeof(fileW));
@@ -12,6 +14,10 @@ fileW *getOutputFile(char *fileName)
     return ret;
 }
 
+/*
+获取输出文件结构
+fileName: 输入文件名
+*/
 fileR *getInputFile(char *fileName)
 {
     fileR *ret = (fileR *)malloc(sizeof(fileR));
@@ -21,6 +27,11 @@ fileR *getInputFile(char *fileName)
     return ret;
 }
 
+/*
+清除缓冲区
+fout: 需要清除缓冲区的输出文件
+ret-> 清除前缓冲区字符数
+*/
 int flushW(fileW *fout)
 {
     if (fout->used == 0)
@@ -35,10 +46,15 @@ int flushW(fileW *fout)
     fout->out &&fwrite(&temp, 1, 1, fout->out);
     fout->used = 0;
     memset(fout->buffer, 0, BUFFER_SIZE);
-    count += ret;
     return ret;
 }
 
+/*
+比特串写入压缩文件
+fout: 写入文件结构
+bitString: 待输入的比特串
+ret-> 比特串长度 % 缓冲区大小
+*/
 int fileWrite(fileW *fout, string bitString)
 {
     int pre = fout->used;
@@ -57,6 +73,11 @@ int fileWrite(fileW *fout, string bitString)
     return (pre + bitString.size()) % BUFFER_SIZE;
 }
 
+/*
+压缩文件
+inputFileName: 输入文件名
+outputFileName: 输出文件名
+*/
 void compress(char *inputFileName, char *outputFileName)
 {
     fileR *fin = getInputFile(inputFileName);
@@ -94,6 +115,11 @@ void compress(char *inputFileName, char *outputFileName)
     fclose(fout->out);
 }
 
+/*
+解压文件
+inputFileName: 输入文件名
+outputFileName: 输出文件名
+*/
 void extract(char *inputFileName, char *outputFileName)
 {
     fileR *fin = getInputFile(inputFileName);
@@ -143,9 +169,7 @@ void extract(char *inputFileName, char *outputFileName)
             cur = root;
         }
         q.pop();
-        count--;
     }
-    cout << count << '\n';
     fclose(fin->in);
     fclose(fout->out);
 }
