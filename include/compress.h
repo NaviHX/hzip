@@ -21,7 +21,13 @@ struct fileW{
 struct fileR{
     FILE* in;
     string* encoding;
-    int remainer;
+    BYTE remainer;
+};
+
+struct header{
+    char head[5]="Hzip";
+    BYTE remainer=0;
+    long long freq[256];
 };
 
 fileW* getOutputFile(char* fileName);

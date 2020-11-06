@@ -21,13 +21,16 @@ struct comp
 {
     bool operator()(node *a, node *b)
     {
-        return a->freq > b->freq;
+        if (a->freq != b->freq)
+            return a->freq > b->freq;
+        else
+            return a->val > b->val;
     }
 };
 
 node *getNode(BYTE c, long long freq);
-node *getHuffmanTree(long long freq[]);
+node *getHuffmanTree(BYTE freq[]);
 void deleteHuffmanTree(node *t);
-void getEncoding(std::string* encoding,node* root,std::vector<char>& state);
+void getEncoding(std::string *encoding, node *root, std::vector<char> &state);
 
 #endif

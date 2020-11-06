@@ -11,7 +11,7 @@ node *getNode(BYTE c, long long freq)
     return temp;
 }
 
-node *getHuffmanTree(long long freq[])
+node *getHuffmanTree(BYTE freq[])
 {
     priority_queue<node *, vector<node *>, comp> heap;
     for (int i = 0; i < MAX_CHAR; i++)
