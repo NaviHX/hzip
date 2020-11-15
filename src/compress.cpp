@@ -131,7 +131,8 @@ void extract(char *inputFileName, char *outputFileName)
     char verify[4];
     queue<char> q;
     BYTE freq[256];
-    fread(verify, sizeof(char), 5, fin->in);
+    int count;
+    count=fread(verify, sizeof(char), 5, fin->in);
     if (!(verify[0] == 'H' && verify[1] == 'Z' && verify[2] == 'i' && verify[3] == 'p'))
     {
         cout << "Error File!\nNot a Hzip file\n";
@@ -140,7 +141,12 @@ void extract(char *inputFileName, char *outputFileName)
     fin->remainer = verify[4];
     if (fin->remainer == 0)
         fin->remainer = 8;
-    fread(freq, sizeof(BYTE), 256, fin->in);
+    count=fread(freq, sizeof(BYTE), 256, fin->in);
+    if(count<256)
+    {
+        cout << "This Hzip File is Corrupt !!!\n";
+        return ;
+    }
     node *root = getHuffmanTree(freq);
     BYTE temp, maxSize = 8, sta, nxt;
     sta = fscanf(fin->in, "%c", &nxt);
@@ -174,6 +180,8 @@ void extract(char *inputFileName, char *outputFileName)
         }
         q.pop();
     }
+    if(cur!=root)
+        cout << "This Hzip File is Corrupt !!!\nBut Hzip can still extract it.\n";
     fclose(fin->in);
     fclose(fout->out);
 }
