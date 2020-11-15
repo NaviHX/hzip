@@ -85,20 +85,22 @@ void compress(char *inputFileName, char *outputFileName)
     BYTE freq[256];
     for (int i = 0; i < 256; i++)
         freq[i] = 0;
-    while (!feof(fin->in))
+    //抽样前4k获取字符频率
+    BYTE *buf = (BYTE *)malloc(sizeof(BYTE) * 4 * 1024);
+    int count = fread(buf, sizeof(BYTE), 4 * 1024, fin->in);
+    for (int i = 0; i < count; i++)
     {
-        BYTE temp;
-        int sta = fread(&temp,sizeof(BYTE),1,fin->in);
-        if (sta != -1)
-            freq[temp]++;
+        if (freq[buf[i]] != 0xffU)
+            freq[buf[i]]++;
     }
+    free(buf);
     fseek(fin->in, 0, SEEK_SET);
     node *hTree = getHuffmanTree(freq);
     string enc[256];
     vector<char> v;
     getEncoding(enc, hTree, v);
     fprintf(fout->out, "HZip");
-    fseek(fout->out,1,SEEK_CUR);
+    fseek(fout->out, 1, SEEK_CUR);
     fwrite(freq, sizeof(BYTE), 256, fout->out);
     fprintf(fout->out, "\0");
     while (!feof(fin->in))
