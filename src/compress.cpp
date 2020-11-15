@@ -82,12 +82,14 @@ void compress(char *inputFileName, char *outputFileName)
 {
     fileR *fin = getInputFile(inputFileName);
     fileW *fout = getOutputFile(outputFileName);
+    BYTE *buf;
+    int count;
     BYTE freq[256];
     for (int i = 0; i < 256; i++)
         freq[i] = 0;
     //抽样前4k获取字符频率
-    BYTE *buf = (BYTE *)malloc(sizeof(BYTE) * 4 * 1024);
-    int count = fread(buf, sizeof(BYTE), 4 * 1024, fin->in);
+    buf = (BYTE *)malloc(sizeof(BYTE) * 4 * 1024);
+    count = fread(buf, sizeof(BYTE), 4 * 1024, fin->in);
     for (int i = 0; i < count; i++)
     {
         if (freq[buf[i]] != 0xffU)
@@ -103,12 +105,12 @@ void compress(char *inputFileName, char *outputFileName)
     fseek(fout->out, 1, SEEK_CUR);
     fwrite(freq, sizeof(BYTE), 256, fout->out);
     fprintf(fout->out, "\0");
+    buf=(BYTE*)malloc(sizeof(BYTE)*1024);
     while (!feof(fin->in))
     {
-        BYTE temp;
-        int sta = fscanf(fin->in, "%c", &temp);
-        if (sta != -1)
-            fileWrite(fout, enc[temp]);
+        count=fread(buf,sizeof(BYTE),1024,fin->in);
+        for(int i=0;i<count;i++)
+            fileWrite(fout,enc[buf[i]]);
     }
     BYTE remainer = flushW(fout);
     fseek(fout->out, 4, SEEK_SET);
