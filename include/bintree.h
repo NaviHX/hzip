@@ -11,10 +11,10 @@ typedef unsigned char BYTE;
 
 struct node
 {
-    node *left;
-    node *right;
-    long long freq;
-    BYTE val;
+    node *left;     //左子节点
+    node *right;    //右子节点
+    long long freq; //频率
+    BYTE val;       //权值
 };
 
 struct comp
