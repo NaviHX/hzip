@@ -22,6 +22,22 @@ struct node
     long long freq; //频率
     BYTE val;       //权值
 };
+
+struct fileW
+{
+    FILE *out; //输出文件
+    string *encoding; //编码表
+    char buffer[BUFFER_SIZE]; //缓冲区
+    int used; //缓冲区已使用的容量
+};
+
+struct fileR
+{
+    FILE *in; //输出的文件
+    string *encoding; //编码表
+    BYTE remainer; //最后一个字节使用的比特数
+};
+
 ```
 
 ## 主程序流程
