@@ -214,17 +214,19 @@ void extract(char *inputFileName, char *outputFileName)
     //构建哈夫曼树
     BYTE temp, maxSize = 8, sta, nxt;
     sta = fscanf(fin->in, "%c", &nxt);
-    while (!feof(fin->in))
+    while (文件没有读取完)
     {
-        //文件内容加入队列
-    }
-    node *cur = root;
-    while (!q.empty())
-    {
-        //获取比特
-        //根据比特值在树上移动
-        if(到达叶子)
-            //输出叶子结点的字符
+        //读入1kb内容
+        //分解为bit数据加入队列
+        while(!q.empty())
+        {
+            //在哈夫曼树上移动cur指针
+            if(cur为叶子节点)
+            {
+                //输出字符
+                cur=root;
+            }
+        }
     }
     if(cur!=root)
         cout << "This Hzip File is Corrupt !!!\nBut Hzip can still extract it.\n";
