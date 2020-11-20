@@ -115,6 +115,8 @@ void compress(char *inputFileName, char *outputFileName)
     BYTE remainer = flushW(fout);
     fseek(fout->out, 4, SEEK_SET);
     fwrite(&remainer, sizeof(BYTE), 1, fout->out);
+    deleteHuffmanTree(hTree);
+    free(buf);
     fclose(fin->in);
     fclose(fout->out);
 }
@@ -182,6 +184,7 @@ void extract(char *inputFileName, char *outputFileName)
     }
     if(cur!=root)
         cout << "This Hzip File is Corrupt !!!\nBut Hzip can still extract it.\n";
+    deleteHuffmanTree(root);
     fclose(fin->in);
     fclose(fout->out);
 }
