@@ -105,12 +105,12 @@ void compress(char *inputFileName, char *outputFileName)
     fseek(fout->out, 1, SEEK_CUR);
     fwrite(freq, sizeof(BYTE), 256, fout->out);
     fprintf(fout->out, "\0");
-    buf=(BYTE*)malloc(sizeof(BYTE)*1024);
+    buf = (BYTE *)malloc(sizeof(BYTE) * 1024);
     while (!feof(fin->in))
     {
-        count=fread(buf,sizeof(BYTE),1024,fin->in);
-        for(int i=0;i<count;i++)
-            fileWrite(fout,enc[buf[i]]);
+        count = fread(buf, sizeof(BYTE), 1024, fin->in);
+        for (int i = 0; i < count; i++)
+            fileWrite(fout, enc[buf[i]]);
     }
     BYTE remainer = flushW(fout);
     fseek(fout->out, 4, SEEK_SET);
@@ -134,7 +134,9 @@ void extract(char *inputFileName, char *outputFileName)
     queue<char> q;
     BYTE freq[256];
     int count;
-    count=fread(verify, sizeof(char), 5, fin->in);
+    BYTE *buf;
+    node *cur;
+    count = fread(verify, sizeof(char), 5, fin->in);
     if (!(verify[0] == 'H' && verify[1] == 'Z' && verify[2] == 'i' && verify[3] == 'p'))
     {
         cout << "Error File!\nNot a Hzip file\n";
@@ -143,46 +145,53 @@ void extract(char *inputFileName, char *outputFileName)
     fin->remainer = verify[4];
     if (fin->remainer == 0)
         fin->remainer = 8;
-    count=fread(freq, sizeof(BYTE), 256, fin->in);
-    if(count<256)
+    count = fread(freq, sizeof(BYTE), 256, fin->in);
+    if (count < 256)
     {
         cout << "This Hzip File is Corrupt !!!\n";
-        return ;
+        return;
     }
     node *root = getHuffmanTree(freq);
-    BYTE temp, maxSize = 8, sta, nxt;
-    sta = fscanf(fin->in, "%c", &nxt);
-    while (!feof(fin->in))
+    buf = (BYTE *)malloc(sizeof(BYTE) * 1024);
+    cur = root;
+    while (count = fread(buf, sizeof(BYTE), 1024, fin->in))
     {
-        temp = nxt;
-        sta = fscanf(fin->in, "%c", &nxt);
-        maxSize = (sta == 255) ? fin->remainer : maxSize;
+        int maxSize = 8;
+        BYTE temp;
+        for (int i = 0; i < count - 1; i++)
+        {
+            temp = buf[i];
+            for (int j = 0; j < maxSize; j++)
+            {
+                q.push((temp & 1) + '0');
+                temp >>= 1;
+            }
+        }
+        maxSize = (feof(fin->in)) ? fin->remainer : 8;
+        temp = buf[count - 1];
         for (int i = 0; i < maxSize; i++)
         {
-            q.push('0' + (temp & 1));
+            q.push((temp & 1) + '0');
             temp >>= 1;
         }
-        if (sta == -1)
-            break;
-    }
-    node *cur = root;
-    while (!q.empty())
-    {
-        char temp = q.front();
-        cur = temp == '0' ? cur->left : cur->right;
-        if (cur == NULL)
+        while (!q.empty())
         {
-            cout << "This Hzip File is Corrupt !!!\n";
-            return;
+            temp = q.front();
+            cur = temp == '0' ? cur->left : cur->right;
+            if (cur == NULL)
+            {
+                cout << "This Hzip File is Corrupt !!!\n";
+                return;
+            }
+            if (cur->left == NULL && cur->right == NULL)
+            {
+                fprintf(fout->out, "%c", cur->val);
+                cur = root;
+            }
+            q.pop();
         }
-        if (cur->left == NULL && cur->right == NULL)
-        {
-            fprintf(fout->out, "%c", cur->val);
-            cur = root;
-        }
-        q.pop();
     }
-    if(cur!=root)
+    if (cur != root)
         cout << "This Hzip File is Corrupt !!!\nBut Hzip can still extract it.\n";
     deleteHuffmanTree(root);
     fclose(fin->in);
